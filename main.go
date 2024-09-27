@@ -3,9 +3,11 @@ package main
 import (
 	"go-gorm/database"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -40,4 +42,23 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	server := gin.Default()
+
+	//	server.GET("/ping", func(c *gin.Context) {
+	//	c.JSON(http.StatusOK, gin.H{
+	//	"message": "pong",
+	// })
+	// })
+
+	server.GET("/events", getEvents)
+
+	server.Run()
+}
+
+func getEvents(context *gin.Context) {
+	// context.JSON(200, "") the same
+	context.JSON(http.StatusOK, gin.H{
+		"message": "Got Events",
+	})
 }
