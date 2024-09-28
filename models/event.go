@@ -18,6 +18,10 @@ type Event struct {
 var events = []Event{}
 
 func (e Event) Save(db *gorm.DB) (Event, error) {
+	// query := `
+	// INSERT INTO events(name, description, location, dateTime, user_id)
+	// VALUES(?, ?, ?, ?, ?)
+	//`
 	result := db.Create(&e)
 
 	if result.Error != nil {
@@ -25,6 +29,18 @@ func (e Event) Save(db *gorm.DB) (Event, error) {
 	}
 
 	return e, nil
+}
+
+func Delete(id int, db *gorm.DB) (Event, error) {
+	event := Event{}
+
+	result := db.Delete(&event, id)
+
+	if result.Error != nil {
+		return Event{}, result.Error
+	}
+
+	return event, nil
 }
 
 func GetAllEvents(db *gorm.DB) ([]Event, error) {
