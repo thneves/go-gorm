@@ -1,6 +1,10 @@
-package event
+package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Event struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
@@ -13,12 +17,23 @@ type Event struct {
 
 var events = []Event{}
 
-func (e Event) Save() {
-	//to do: add it to database
+func (e Event) Save(db *gorm.DB) (Event, error) {
+	result := db.Create(&e)
 
-	events = append(events, e)
+	if result.Error != nil {
+		return Event{}, result.Error
+	}
+
+	return e, nil
 }
 
-func GetAllEvents() []Event {
-	return events
+func GetAllEvents(db *gorm.DB) ([]Event, error) {
+	events := []Event{}
+	result := db.Find(&events)
+
+	if result.Error != nil {
+		return []Event{}, result.Error
+	}
+
+	return events, nil
 }
