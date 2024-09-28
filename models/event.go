@@ -10,3 +10,15 @@ type Event struct {
 	DateTime    time.Time `json:"date_time"`
 	UserID      uint      `json:"user_id" gorm:"foreignKey:UserID"`
 }
+
+var events = []Event{}
+
+func (e Event) Save() {
+	//to do: add it to database
+
+	events = append(events, e)
+}
+
+func GetAllEvents() []Event {
+	return events
+}

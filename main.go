@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-gorm/database"
+	event "go-gorm/models"
 	"log"
 	"net/http"
 	"os"
@@ -52,13 +53,31 @@ func main() {
 	// })
 
 	server.GET("/events", getEvents)
+	server.POST("/create_event", createEvent)
 
 	server.Run()
 }
 
 func getEvents(context *gin.Context) {
-	// context.JSON(200, "") the same
+	events := event.GetAllEvents()
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Got Events",
+		"message": "All Events Retrieved",
+		"events":  events,
+	})
+}
+
+func createEvent(context *gin.Context) {
+	var event event.Event
+
+	if err := context.ShouldBindJSON(&event); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{
+		"message": "Event Created",
+		"event":   event,
 	})
 }
