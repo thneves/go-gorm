@@ -37,3 +37,16 @@ func GetAllEvents(db *gorm.DB) ([]Event, error) {
 
 	return events, nil
 }
+
+func GetEventById(id int, db *gorm.DB) (Event, error) {
+	event := Event{}
+
+	result := db.First(&event, id)
+	// SELECT * FROM events WHERE id = id;
+
+	if result.Error != nil {
+		return Event{}, result.Error
+	}
+
+	return event, nil
+}

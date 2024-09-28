@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"go-gorm/database"
 	event "go-gorm/models"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -59,6 +61,9 @@ func main() {
 	server.POST("/create_event", func(c *gin.Context) {
 		createEvent(c, db_conn)
 	})
+	server.GET("/event/:id", func(c *gin.Context) {
+		getEvent(c, db_conn)
+	})
 
 	server.Run()
 }
@@ -102,6 +107,29 @@ func createEvent(context *gin.Context, db *gorm.DB) {
 
 	context.JSON(http.StatusCreated, gin.H{
 		"message": "Event Created",
+		"event":   event,
+	})
+}
+
+func getEvent(context *gin.Context, db *gorm.DB) {
+	id := context.Param("id")
+	parsedId, err := strconv.Atoi(id)
+
+	if err != nil {
+		fmt.Println("Error parsing string")
+	}
+
+	event, err := event.GetEventById(parsedId, db)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"message": "failed to retrieve evenbt",
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"message": "succesfully retrieved event",
 		"event":   event,
 	})
 }
