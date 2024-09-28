@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -52,27 +53,50 @@ func main() {
 	// })
 	// })
 
-	server.GET("/events", getEvents)
-	server.POST("/create_event", createEvent)
+	server.GET("/events", func(c *gin.Context) {
+		getEvents(c, db_conn)
+	})
+	server.POST("/create_event", func(c *gin.Context) {
+		createEvent(c, db_conn)
+	})
 
 	server.Run()
 }
 
-func getEvents(context *gin.Context) {
-	events := event.GetAllEvents()
+func getEvents(context *gin.Context, db *gorm.DB) {
+	events, err := event.GetAllEvents(db)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to retrieve events",
+		})
+
+		return
+	}
+
 	context.JSON(http.StatusOK, gin.H{
 		"message": "All Events Retrieved",
 		"events":  events,
 	})
 }
 
-func createEvent(context *gin.Context) {
+func createEvent(context *gin.Context, db *gorm.DB) {
 	var event event.Event
 
 	if err := context.ShouldBindJSON(&event); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
+	}
+
+	event, err := event.Save(db)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to save event",
+		})
+
 		return
 	}
 
