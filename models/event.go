@@ -8,11 +8,13 @@ import (
 
 type Event struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
-	NAME        string    `json:"name" gorm:"size:255;not null"`
+	Name        string    `json:"name" gorm:"size:255;not null"`
 	Description string    `json:"description" gorm:"size:255;not null"`
 	Location    string    `json:"location" gorm:"default: 'planet earth'"`
 	DateTime    time.Time `json:"date_time"`
 	UserID      uint      `json:"user_id" gorm:"foreignKey:UserID"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 var events = []Event{}
@@ -65,4 +67,22 @@ func GetEventById(id int, db *gorm.DB) (Event, error) {
 	}
 
 	return event, nil
+}
+
+func (e *Event) Update(db *gorm.DB) (Event, error) {
+	// Ensure that we update an existing event by its primary key (ID)
+	result := db.Model(e).Updates(map[string]interface{}{
+		"Name":        e.Name,
+		"Description": e.Description,
+		"Location":    e.Location,
+		"DateTime":    e.DateTime, // Only update if it's provided
+	})
+
+	// Check for errors during the update operation
+	if result.Error != nil {
+		return Event{}, result.Error
+	}
+
+	// Return the updated event
+	return *e, nil
 }

@@ -1,0 +1,8 @@
+PUT http://localhost:8080/event/8
+content-type: application/json
+
+{
+  "name": "new name",
+  "description": "new description",
+  "location": "new location"
+}

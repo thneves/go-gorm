@@ -2,7 +2,7 @@ POST http://localhost:8080/create_event
 content-type: application/json
 
 {
-  "name": "Halloween TSH",
+  "name": "Halloween TSHsss",
   "description": "Halloween party with best custome and free skate ramp, best tricks on!",
   "location": "The Search House",
   "dateTime": "2025-01-01T15:30:00.000Z"
