@@ -25,7 +25,7 @@ func RegisterRoutes(server *gin.Engine, db *gorm.DB) {
 		signUp(c, db)
 	})
 
-	//server.POST("/login", func(c *gin.Context) {
-	//login(c, db)
-	//})
+	server.POST("/login", func(c *gin.Context) {
+		login(c, db)
+	})
 }
