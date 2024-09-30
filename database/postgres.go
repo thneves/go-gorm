@@ -29,7 +29,7 @@ func NewConnection(config *Config) (*gorm.DB, error) {
 		log.Fatal(err)
 	}
 
-	err = db.AutoMigrate(&models.Event{}) // must pass the pointer of the struct type, which is required by GORM.
+	err = db.AutoMigrate(&models.User{}, &models.Event{}) // must pass the pointer of the struct type, which is required by GORM.
 
 	if err != nil {
 		log.Fatal("failed to migrate databse")
@@ -40,6 +40,8 @@ func NewConnection(config *Config) (*gorm.DB, error) {
 
 /*
 func createTables(db *gorm.DB) {
+
+
 	createEventsTable := `
 		CREATE TABLE IF NOT EXISTS events (
 			id INTEGER PRIMARY KEY AUTOINCREMENT
@@ -48,6 +50,7 @@ func createTables(db *gorm.DB) {
 			location TEXT NOT NULL,
 			datetime DATETIME NOT NULL,
 			user_id INTEGER
+			FOREIGN KEY(user_id) REFERENCE users(id)
 		)
 	`
 
