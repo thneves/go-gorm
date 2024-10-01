@@ -1,4 +1,4 @@
-package routes
+package controllers
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func getEvents(context *gin.Context, db *gorm.DB) {
+func GetEvents(context *gin.Context, db *gorm.DB) {
 	//events, err := event.GetAllEvents(db)
 	events, err := event.GetAllEvents(db)
 
@@ -29,7 +29,7 @@ func getEvents(context *gin.Context, db *gorm.DB) {
 	})
 }
 
-func createEvent(context *gin.Context, db *gorm.DB) {
+func CreateEvent(context *gin.Context, db *gorm.DB) {
 	var event event.Event
 
 	if err := context.ShouldBindJSON(&event); err != nil {
@@ -55,7 +55,7 @@ func createEvent(context *gin.Context, db *gorm.DB) {
 	})
 }
 
-func getEvent(context *gin.Context, db *gorm.DB) {
+func GetEvent(context *gin.Context, db *gorm.DB) {
 	id := context.Param("id")
 	parsedId, err := strconv.Atoi(id)
 
@@ -78,7 +78,7 @@ func getEvent(context *gin.Context, db *gorm.DB) {
 	})
 }
 
-func deleteEvent(context *gin.Context, db *gorm.DB) {
+func DeleteEvent(context *gin.Context, db *gorm.DB) {
 	id := context.Param("id")
 	parsedId, err := strconv.Atoi(id)
 
@@ -102,7 +102,7 @@ func deleteEvent(context *gin.Context, db *gorm.DB) {
 	})
 }
 
-func updateEvent(context *gin.Context, db *gorm.DB) {
+func UpdateEvent(context *gin.Context, db *gorm.DB) {
 	// Extract the event ID from the URL params
 	id := context.Param("id")
 	parsedID, _ := strconv.Atoi(id)

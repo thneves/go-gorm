@@ -1,4 +1,4 @@
-package routes
+package controllers
 
 import (
 	"go-gorm/models"
@@ -6,14 +6,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 )
 
 var jwtSecret = []byte("This is super secret")
 
-func signUp(context *gin.Context, db *gorm.DB) {
+func SignUp(context *gin.Context, db *gorm.DB) {
 	var user models.User
 
 	err := context.ShouldBindJSON(&user)
@@ -40,7 +39,7 @@ func signUp(context *gin.Context, db *gorm.DB) {
 	})
 }
 
-func login(context *gin.Context, db *gorm.DB) {
+func Login(context *gin.Context, db *gorm.DB) {
 	var userInput struct {
 		Email    string `json:"email" binding:"required, email"`
 		Password string `json:"password" binding:"required"`
@@ -54,7 +53,7 @@ func login(context *gin.Context, db *gorm.DB) {
 	var user models.User
 
 	// Find User model by email
-	err := db.Where("email = ?", userInput.Email).First(&user)
+	err := db.Where("email = ?", userInput.Email).First(&user).Error
 
 	if err != nil {
 		context.JSON(http.StatusUnauthorized, gin.H{

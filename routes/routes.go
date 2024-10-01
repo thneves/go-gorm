@@ -1,31 +1,33 @@
 package routes
 
 import (
+	"go-gorm/controllers"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func RegisterRoutes(server *gin.Engine, db *gorm.DB) {
 	server.GET("/events", func(c *gin.Context) {
-		getEvents(c, db)
+		controllers.GetEvents(c, db)
 	})
 	server.POST("/create_event", func(c *gin.Context) {
-		createEvent(c, db)
+		controllers.CreateEvent(c, db)
 	})
 	server.GET("/event/:id", func(c *gin.Context) {
-		getEvent(c, db)
+		controllers.GetEvent(c, db)
 	})
 	server.DELETE("/event/:id", func(c *gin.Context) {
-		deleteEvent(c, db)
+		controllers.DeleteEvent(c, db)
 	})
 	server.PUT("/event/:id", func(c *gin.Context) {
-		updateEvent(c, db)
+		controllers.UpdateEvent(c, db)
 	})
 	server.POST("/signup", func(c *gin.Context) {
-		signUp(c, db)
+		controllers.SignUp(c, db)
 	})
 
 	server.POST("/login", func(c *gin.Context) {
-		login(c, db)
+		controllers.Login(c, db)
 	})
 }
