@@ -1,4 +1,4 @@
-POST http://localhost:8080/create_event
+POST http://localhost:8080/api/create_event
 content-type: application/json
 
 {

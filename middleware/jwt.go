@@ -17,7 +17,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		if authHeader == "" {
 			context.JSON(http.StatusUnauthorized, gin.H{
-				"error": "Authoriztion header is empty",
+				"error": "Authorization header is empty",
 			})
 			context.Abort()
 			return
