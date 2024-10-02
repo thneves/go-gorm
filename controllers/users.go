@@ -51,7 +51,7 @@ func SignUp(context *gin.Context, db *gorm.DB) {
 
 func Login(context *gin.Context, db *gorm.DB) {
 	var userInput struct {
-		Email    string `json:"email" binding:"required, email"`
+		Email    string `json:"email" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
 
@@ -74,7 +74,9 @@ func Login(context *gin.Context, db *gorm.DB) {
 
 	// Check pass
 
-	if err := utils.CheckPassword(user.Password, userInput.Password); err != nil {
+	isValidPassword := utils.CheckPassword(userInput.Password, user.Password)
+
+	if !isValidPassword {
 		context.JSON(http.StatusUnauthorized, gin.H{
 			"error": "invalid credentials",
 		})
