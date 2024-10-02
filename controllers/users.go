@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-gorm/models"
+	"go-gorm/utils"
 	"net/http"
 	"time"
 
@@ -20,6 +21,15 @@ func SignUp(context *gin.Context, db *gorm.DB) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
+		})
+		return
+	}
+
+	user.Password, err = utils.HashPassword(user.Password)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to hash password",
 		})
 		return
 	}
@@ -64,7 +74,7 @@ func Login(context *gin.Context, db *gorm.DB) {
 
 	// Check pass
 
-	if err := user.CheckPassword(userInput.Password); err != nil {
+	if err := utils.CheckPassword(user.Password, userInput.Password); err != nil {
 		context.JSON(http.StatusUnauthorized, gin.H{
 			"error": "invalid credentials",
 		})
