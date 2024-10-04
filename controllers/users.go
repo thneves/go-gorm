@@ -4,14 +4,12 @@ import (
 	"go-gorm/models"
 	"go-gorm/utils"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 )
 
-var jwtSecret = []byte("This is super secret")
+var jwtSecret = []byte("bigmistery")
 
 func SignUp(context *gin.Context, db *gorm.DB) {
 	var user models.User
@@ -83,20 +81,19 @@ func Login(context *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": user.ID,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
-	})
-
-	tokenString, err := token.SignedString(jwtSecret)
+	token, err := utils.GenerateToken(user.Email, user.ID)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to create token",
+			"error":   "failed to create token",
+			"message": err.Error(),
 		})
 
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"token": tokenString})
+	context.JSON(http.StatusOK, gin.H{
+		"message": "login succesful!",
+		"token":   token,
+	})
 }
