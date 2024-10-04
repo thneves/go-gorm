@@ -17,7 +17,7 @@ func RegisterRoutes(server *gin.Engine, db *gorm.DB) {
 	})
 
 	protected := server.Group("/api")
-	protected.Use(middleware.AuthMiddleware())
+	protected.Use(middleware.Authorization())
 
 	{
 		protected.GET("/events", func(c *gin.Context) {

@@ -3,6 +3,7 @@ package utils
 import (
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -16,4 +17,16 @@ func GenerateToken(email string, userId uint) (string, error) {
 	})
 
 	return token.SignedString([]byte(secretKey))
+}
+
+func VerifyToken(tokenString string) (*jwt.Token, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, gin.Error{}
+		}
+
+		return secretKey, nil
+	})
+
+	return token, err
 }
